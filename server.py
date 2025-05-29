@@ -250,7 +250,7 @@ def check_library():
             }]
         })
 
- if __name__ == '__main__':
+if __name__ == '__main__':
     port = int(os.environ.get("PORT", 10000))  # Render에서 PORT 환경변수를 제공함
     app.run(host='0.0.0.0', port=port)
 #    app.run(debug=True, port=5000)
