@@ -154,7 +154,7 @@ def search():
         'TTBKey': ALADIN_API_KEY,
         'Query': query,
         'QueryType': 'Keyword',
-        'MaxResults': 48,
+        'MaxResults': 24,
         'Start': 1,
         'SearchTarget': 'Book',
         'output': 'js',
