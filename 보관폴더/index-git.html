@@ -38,9 +38,6 @@
      padding: 20px 0; 
     }
     .book-card {
-     display: flex;
-     flex-direction: column;
-     justify-content: flex-start;
      width: 300px;  /* 또는 기존 사용하던 정확한 너비 */
      border: 1px solid #ccc;
      border-radius: 6px;
@@ -50,19 +47,14 @@
     }
     .book-card img {
       width: 100%;
-      max-height: 120px;
+      max-height: 220px;
       object-fit: cover;
       border-radius: 6px;
     }
     .book-info {
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
+      margin-top: 6px;
+      line-height: 1.3;
     }
-    .book-info p {
-      line-height: 1.4;
-    }
-    
     .book-info h3 {
       margin: 3px 0;
       font-size: 15px;
@@ -83,7 +75,7 @@
     }
     .dropdown-container {
       position: fixed;
-      top: 245px;
+      top: 185px;
       left: 325px;
       z-index: 999;
       display: none;
@@ -211,7 +203,7 @@
 .api-footer {
   width: 100%;
   background-color: #f0f0f0;
-  padding: 1px 0;
+  padding: 5px 0;
   position: fixed;
   bottom: 0;
   left: 0;
@@ -225,7 +217,7 @@
   justify-content: center; /* 가운데 정렬 유지 */
   align-items: center;
   padding: 10px 20px;
-  font-size: 12px;
+  font-size: 14px;
   color: #444;
 }
 .api-provide {
@@ -256,13 +248,13 @@
 #backToTop {
   display: none; /* 처음엔 숨김 */
   position: fixed;
-  bottom: 60px; /* 화면 아래쪽에서 60px */
-  right: 40px;  /* 화면 오른쪽에서 20px */
+  bottom: 40px; /* 화면 아래쪽에서 40px */
+  right: 40px;  /* 화면 오른쪽에서 40px */
   z-index: 999;
   font-size: 16px;
   border: none;
   outline: none;
-  background-color: #e8a01a; 
+  background-color: #1a73e8; /* 파란색 버튼 (원하면 다른 색으로 바꿀 수 있음) */
   color: white;
   cursor: pointer;
   padding: 12px 16px;
@@ -271,7 +263,7 @@
 }
 
 #backToTop:hover {
-  background-color: #d6aa4c;
+  background-color: #0d47a1; /* 마우스 올렸을 때 색 변경 */
 }
 
     /* 반응형 스타일 */
@@ -378,106 +370,11 @@
     color: #666;
   }
 }
-.spinner {
-  border: 8px solid #f3f3f3; /* 회색 테두리 */
-  border-top: 8px solid #3498db; /* 파란색 테두리 */
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  animation: spin 1s linear infinite;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 9999;
-}
 
-@keyframes spin {
-  0% { transform: translate(-50%, -50%) rotate(0deg); }
-  100% { transform: translate(-50%, -50%) rotate(360deg); }
-}
-.button-group {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: auto;
-  padding-top: 10px;
-  flex-wrap: nowrap;
-}
-
-.action-button {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  background-color: #f0f0f0;
-  color: #333;
-  padding: 10px 0;
-  text-decoration: none;
-  border-radius: 6px;
-  font-weight: bold;
-  font-size: 14px;
-  cursor: pointer;
-  border: 1px solid #ccc;
-  transition: background-color 0.3s ease;
-  
-}
-
-.action-button:hover {
-  background-color: #e0e0e0;
-}
-
-@media (max-width: 600px) {
-  .button-group {
-    flex-direction: row;
-    flex-wrap: nowrap;
-  }
-}
-
-  /* 모바일 화면(예: 최대 너비 768px)에서만 보이도록 */
-  @media (max-width: 768px) {
-    #shareButton {
-      display: block;
-    }
-  }
-  #mobileShareContainer {
-    display: none;
-    text-align: center;
-    margin-top: 10px;
-  }
-
-  #shareButton {
-    display: none;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    margin-left: 8px;  /* 사이트 제목과 약간 간격 */
-    vertical-align: middle;
-  }
-  #shareButton svg {
-    width: 20px;
-    height: 20px;
-    fill: #555
-  }
-
-  /* 모바일에서만 표시 */
-  @media (max-width: 1024px) {
-    #shareButton {
-    display: inline-block;
-    }
-  }
-  
   </style>
 </head>
 <body>
-  <h1 class="site-title">📚 책! 한눈에 <button id="shareButton" aria-label="공유하기">
-    <!-- SVG 아이콘 -->
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#555" viewBox="0 0 24 24">
-      <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.02-4.11c.53.5 1.23.81 2.07.81 1.66 0 3-1.34 3-3S19.66 2 18 2s-3 1.34-3 3c0 .24.04.47.09.7L8.07 9.81C7.54 9.31 6.84 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.84 0 1.54-.31 2.07-.81l7.13 4.19c-.05.21-.07.43-.07.66 0 1.66 1.34 3 3 3s3-1.34 3-3-1.34-3-3-3z"/>
-    </svg>
-  </button></h1>
+  <h1 class="site-title">📚 책! 한눈에 </h1>
 
   <div class="search-container">
     <input id="searchInput" type="text" placeholder="책 제목, 작가, 출판사 입력" />
@@ -496,7 +393,6 @@
     <!-- 도서카드들 -->
   </div>
 </div>
-<div id="loadingSpinner" class="spinner" style="display: none;"></div>
 
   <div class="dropdown-container">
     <select id="regionSelect"><option value="">--지역 선택--</option></select>
@@ -507,7 +403,7 @@
   </div>
 
   <div class="results" id="results"></div>
-  <button id="loadMoreBtn" style="display:none;">더보기</button>  
+  <button id="loadMoreBtn" style="display:none;">더보기</button>
 
   <!-- ✅ 모달 구조 추가 -->
   <div id="libraryModal" class="modal">
@@ -558,52 +454,35 @@
     }
 
     function createBookCard(book) {
-  const priceNew = book.priceStandard ? formatPrice(book.priceStandard) : '정보 없음';
-  const priceSale = book.priceSales ? formatPrice(book.priceSales) : '정보 없음';
+      const priceNew = book.priceStandard ? formatPrice(book.priceStandard) : '정보 없음';
+      const priceSale = book.priceSales ? formatPrice(book.priceSales) : '정보 없음';
+      const usedLink = `https://www.aladin.co.kr/search/wsearchresult.aspx?SearchTarget=Used&KeyWord=${encodeURIComponent(book.title)}`;
 
-  const itemId = extractItemId(book.link);
+      const card = document.createElement('div');
+      card.className = 'book-card';
 
-  // 새책/전자책 링크
-  const newLinkPC = book.link;
-  const newLinkMobile = `https://www.aladin.co.kr/m/mproduct.aspx?ItemId=${itemId}`;
-  const newLinkFinal = isMobile() ? newLinkMobile : newLinkPC;
+      card.innerHTML = `
+        <img src="${book.cover}" alt="표지 이미지">
+        <div class="book-info">
+          <h3>${book.title}</h3>
+          <p>저자: ${book.author}</p>
+          <p>출판사: ${book.publisher} (${book.pubDate})</p>
+          <p class="price">정가: ${priceNew} / 할인가: ${priceSale}</p>
+          <div class="links">
+            <a href="${book.link}" target="_blank" class="shop-link">🔗 새책/ 전자책 사러가기</a><br>
+            <a href="${usedLink}" target="_blank" class="shop-link">📚 중고책 사러가기</a><br><br>
+            <a href="#" class="library-status-link" 
+               data-isbn="${book.isbn13}" 
+               data-title="${book.title}"
+               style="font-size: 16px; color: #555555; font-weight: bold;">
+              📖 관심도서관 대여현황 확인
+            </a>
+          </div>
+        </div>
+      `;
+      return card;
+    }
 
-  // 중고책 링크
-  const usedLinkPC = `https://www.aladin.co.kr/search/wsearchresult.aspx?SearchTarget=Used&KeyWord=${encodeURIComponent(book.title)}`;
-  const usedLinkMobile = `https://www.aladin.co.kr/m/museditemall.aspx?ItemId=${itemId}&TabType=1&Fix=1`;
-  const usedLinkFinal = isMobile() ? usedLinkMobile : usedLinkPC;
-
-  const card = document.createElement('div');
-  card.className = 'book-card';
-
-  card.innerHTML = `
-    <img src="${book.cover}" alt="표지 이미지">
-    <div class="book-info">
-      <h3>${book.title}</h3>
-      <p>${book.author}</p>
-      <p>${book.publisher} (${book.pubDate})</p>
-      <p class="price">정가: ${priceNew} / 할인가: ${priceSale}</p>
-      <div class="button-group">
-        <a href="${newLinkFinal}" target="_blank" class="action-button">새책/전자책</a>
-        <a href="${usedLinkFinal}" target="_blank" class="action-button">중고책</a>
-        <button type="button" class="action-button library-status-link"
-                data-isbn="${book.isbn13}" 
-                data-title="${book.title}">
-          도서관<br>대여정보
-        </button>
-      </div>
-    </div>
-  `;
-  return card;
-}
-function extractItemId(url) {
-  const match = url.match(/ItemId=(\d+)/);
-  return match ? match[1] : '';
-}
-
-function isMobile() {
-  return /Mobi|Android/i.test(navigator.userAgent);
-}
     function renderBooks() {
       const toShow = allBooks.slice(displayedCount, displayedCount + PAGE_SIZE);
       toShow.forEach(book => {
@@ -643,24 +522,18 @@ function isMobile() {
       loadMoreBtn.style.display = 'none';
       displayedCount = 0;
       allBooks = [];
-      // ✅ 스피너 보이기 시작
-      document.getElementById('loadingSpinner').style.display = 'block';
 
       fetch(`/search?query=${encodeURIComponent(query)}`)
         .then(res => res.json())
         .then(data => {
           if (!data.item || data.item.length === 0) {
-        resultsContainer.innerHTML = '<p>검색 결과가 없습니다.</p>';
-      } else {
-        allBooks = data.item;
-        renderBooks();
-      }
-    })
-    .finally(() => {
-      // ✅ API 요청 끝났으니 스피너 숨김
-      document.getElementById('loadingSpinner').style.display = 'none';
-    });
-}
+            resultsContainer.innerHTML = '<p>검색 결과가 없습니다.</p>';
+            return;
+          }
+          allBooks = data.item;
+          renderBooks();
+        });
+    }
 
     loadMoreBtn.addEventListener('click', renderBooks);
 
@@ -729,14 +602,12 @@ function isMobile() {
         console.log('ISBN 또는 도서관 코드가 없습니다. 요청을 중단합니다.');
         return;
       }
-      
+
       const selectedLibraryName = dropdownLibrarySelect.selectedOptions[0].textContent;
 
       // [변경] 모달 첫 줄 - [책 제목] 선택된 책 제목 형태로 표현
       // modalContent.innerHTML 대체 전에 아래 span에 책 제목 세팅 (span은 HTML에 있어야 함)
       document.getElementById('modalBookTitle').textContent = selectedTitle || '';
-      // ✅ 스피너 보이기 시작
-      document.getElementById('loadingSpinner').style.display = 'block';
 
       fetch(`/check_library?isbn=${selectedISBN}&libraryCode=${libCode}`)
         .then(res => res.json())
@@ -758,13 +629,9 @@ function isMobile() {
 
         })
         .catch(err => {
-      console.error('요청 실패:', err);
-      modalContent.innerHTML = `<p style="color:red;">요청 실패: ${err}</p>`;
-      modal.style.display = 'block';
-    })
-    .finally(() => {
-      // ✅ API 요청 끝났으니 스피너 숨김
-      document.getElementById('loadingSpinner').style.display = 'none';
+          console.error('요청 실패:', err);
+          modalContent.innerHTML = `<p style="color:red;">요청 실패: ${err}</p>`;
+          modal.style.display = 'block';
         });
     });
 
@@ -827,18 +694,6 @@ function isMobile() {
       top: 0,
       behavior: "smooth"
     });
-  });
-
-  document.getElementById('shareButton').addEventListener('click', () => {
-    if (navigator.share) {
-      navigator.share({
-        title: document.title,
-        text: '이 사이트에서 책 검색하고 대출 정보 확인해보세요!',
-        url: window.location.href
-      }).catch(console.error);
-    } else {
-      alert('이 브라우저는 공유 기능을 지원하지 않습니다.');
-    }
   });
   </script>  
 
