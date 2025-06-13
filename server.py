@@ -21,7 +21,8 @@ ALADIN_API_KEY = 'ttbj0124hkm1509002'  # 알라딘 API 키
 LIBRARY_API_KEY = 'c7a9b167110c242ad1634d7898b6970778f961fcefc0e6da9d52273b0ebb53ea'  # 공공도서관 API 키
 
 # 도서관 목록 엑셀 파일 경로
-LIBRARY_LIST_FILE = 'library_list.xlsx'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+LIBRARY_LIST_FILE = os.path.join(BASE_DIR, 'library_list.xlsx')
 
 # 도서관 목록 캐시
 library_data = None
@@ -251,6 +252,7 @@ def check_library():
         })
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 10000))  # Render에서 PORT 환경변수를 제공함
+    port = int(os.environ.get("PORT", 10000))  
 #  app.run(host='0.0.0.0', port=port)
-    app.run(debug=True, port=5000)
+#  app.run(debug=True, port=5000)
+    pass
