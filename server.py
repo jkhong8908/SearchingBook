@@ -21,6 +21,10 @@ def home():
 def robots():
     return send_from_directory('static', 'robots.txt')
 
+@app.route('/sitemap.xml')
+def sitemap():
+    return send_from_directory('static', 'sitemap.xml')
+
 # 환경변수 또는 config로 설정하세요.
 ALADIN_API_KEY = 'ttbj0124hkm1509002'  # 알라딘 API 키
 LIBRARY_API_KEY = 'c7a9b167110c242ad1634d7898b6970778f961fcefc0e6da9d52273b0ebb53ea'  # 공공도서관 API 키
