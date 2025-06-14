@@ -6,6 +6,7 @@ import re
 from time import time
 from functools import wraps
 from flask_caching import Cache
+from flask import send_from_directory
 
 app = Flask(__name__)
 
@@ -15,6 +16,10 @@ cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 @app.route('/')
 def home():
     return render_template('index.html')
+
+@app.route('/robots.txt')
+def robots():
+    return send_from_directory('static', 'robots.txt')
 
 # 환경변수 또는 config로 설정하세요.
 ALADIN_API_KEY = 'ttbj0124hkm1509002'  # 알라딘 API 키
