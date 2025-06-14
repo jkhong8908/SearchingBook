@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 Allow: /
-Sitemap: https://checkchaek.kr/sitemap.xml
+Sitemap: https://checkchaek.kr/static/sitemap.xml
