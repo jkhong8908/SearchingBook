@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+
+# Logs
+*.log
+nohup.out
+
+# Personal config
+.bash_history
+.bash_logout
+.bash_profile
+.bashrc
+.viminfo
+
+# Local folders
+.cache/
+.local/
+.ssh/
