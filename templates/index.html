@@ -1,406 +1,189 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-FZLTTC3JYS"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-FZLTTC3JYS');
-</script>
-  <!-- Google Tag Manager -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FZLTTC3JYS"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FZLTTC3JYS');
+  </script>
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],\
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=\
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);\
   })(window,document,'script','dataLayer','GTM-KCW6JKPC');</script>
-  <!-- End Google Tag Manager -->
-
-<script type="text/javascript" src="//wcs.naver.net/wcslog.js"></script>
-<script type="text/javascript">
-if(!wcs_add) var wcs_add = {};
-wcs_add["wa"] = "12e16a2578e9ca0";
-if(window.wcs) {
-  wcs_do();
-}
-</script>
-
+  <script type="text/javascript" src="//wcs.naver.net/wcslog.js"></script>
+  <script type="text/javascript">
+  if(!wcs_add) var wcs_add = {};
+  wcs_add["wa"] = "12e16a2578e9ca0";
+  if(window.wcs) {
+    wcs_do();
+  }
+  </script>
+  
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="naver-site-verification" content="45e275fbf1e3c48aa11dae5203830034f4fe02db" />
   <meta name="description" content="관심도서에 대한 구매 정보와, 도서관 대여 정보까지 한 곳에서 확인할 수 있습니다">
-  <title>책! 한눈에</title>
+  <title>CheckChaek - 새책과 중고책, 도서관 대출정보까지</title>
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='book.png') }}">
   <style>
-    /* 기존 스타일 유지 */
     body {
+      background-color: #f8f9fa; 
       font-family: sans-serif;
-      padding: 2rem;
-      background-color: #f5f5f5;
+      padding-bottom: 70px; /* footer 높이만큼 패딩 추가 */
     }
-    h1 {
+    header {
       text-align: center;
+      margin: 20px 0;
     }
-    .search-container {
+    .search-bar {
       display: flex;
       justify-content: center;
-      margin-bottom: 0.5rem;
+      align-items: center;
+      margin-bottom: 30px;
     }
     #searchInput {
-      width: 400px;
+      width: 70%;
+      max-width: 500px;
       padding: 10px;
-      font-size: 16px;
     }
-    #searchButton {
-      padding: 10px 20px;
-      font-size: 16px;
-      margin-left: 10px;
-      cursor: pointer;
+    #searchInput::placeholder {
+      font-size: 15px; /* 글자 크기를 작게 */
+      color: #aaaaaa; /* 글자 색을 희미하게 (연한 회색) */
+      opacity: 1; /* 일부 브라우저 호환성을 위해 추가 */
     }
     .results {
-     display: grid;
-     grid-template-columns: repeat(4, 300px); /* 4개, 고정 너비 */
-     gap: 20px; /* 카드 사이 간격 */
-     justify-content: center; /* 가로 중앙 정렬 */
-     padding: 20px 0; 
-    }
-    .book-card {
-     display: flex;
-     flex-direction: column;
-     justify-content: flex-start;
-     width: 300px;  /* 또는 기존 사용하던 정확한 너비 */
-     border: 1px solid #ccc;
-     border-radius: 6px;
-     padding: 6px;
-     box-sizing: border-box;
-     background: #fff;
-    }
-    .book-card img {
-      width: 100%;
-      max-height: 120px;
-      object-fit: cover;
-      border-radius: 6px;
-    }
-    .book-info {
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
-    }
-    .book-info p {
-      line-height: 1.4;
-    }
-    
-    .book-info h3 {
-      margin: 3px 0;
-      font-size: 15px;
-    }
-    .price {
-      margin-top: 3px;
-      font-size: 15px;
-      font-weight: bold;
-      color: #1a73e8;
-    }
-    .links a {
-      display: inline-block;
-      margin-top: 4px;
-      color: #555;
-      text-decoration: underline;
-      font-size: 15px;
-      cursor: pointer;
-    }
-    .dropdown-container {
-      position: fixed;
-      top: 245px;
-      left: 325px;
-      z-index: 999;
-      display: none;
-      flex-wrap: wrap;
-      flex-direction: row;
-      gap: 10px;
-      background-color: #f9f9f9;
-      padding: 10px;
-      border-radius: 8px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
-      align-items: center;
-      max-width: 95vw;
-      box-sizing: border-box;
-    }
-    
-    .dropdown-container select {
-      padding: 6px;
-      font-size: 14px;
-      min-width: 120px;
-      flex: 1 1 auto;
-      max-width: 100%;
-    }
-    .dropdown-container #checkLibraryBtn,
-    .dropdown-container #closeDropdownBtn {
-      padding: 6px 14px;
-      font-size: 14px;
-      cursor: pointer;
-      background-color: #1a73e8;
-      border: none;
-      color: white;
-      border-radius: 4px;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-    .dropdown-container #closeDropdownBtn {
-      background-color: orange;
-    }
-
-    .dropdown-container #checkLibraryBtn:disabled {
-      background-color: #999;
-      cursor: not-allowed;
-    }
-    #loadMoreBtn {
-      display: block;
-      margin: 20px auto;
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      background-color: #1a73e8;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      user-select: none;
-    }
-    #loadMoreBtn:disabled {
-      background-color: #999;
-      cursor: not-allowed;
-    }
-    select option {
-      color: black !important;
-      font-size: 16px;
-      opacity: 1 !important;
-      background-color: white;
-    }
-    select:disabled {
-      background-color: #f0f0f0;
-    }    
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100vw;
-      height: 100vh;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.4);
-    }
-    .modal-content {
-      background-color: #fff;      
-      padding: 20px;
-      border-radius: 10px;
-      width: 90%;
-      max-width: 500px;
-      position: absolute;
-      top: 25%;
-      left: 50%;
-      transform: translateX(-50%);      
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      box-sizing: border-box;
-    }
-    .modal-close {
-      color: #aaa;
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .modal-close:hover {
-      color: black;
-    }
-    .site-title {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      font-size: clamp(32px, 5vw, 56px);
-      max-width: 100%;
-      text-align: center;
-      margin: 0 auto;
-      margin-bottom: 2rem
+      display: grid;
+      grid-template-columns: repeat(4, 300px);
+      gap: 20px;
+      justify-content: center;
+      padding: 20px 0;
     }
     .results-wrapper {
       display: flex;
       justify-content: center;
     }
-    .shop-link {
-      font-size: 30px;  
-      font-weight: bold; 
-      color: #333; 
-    }
-    .api-footer {
-      width: 100%;
-      background-color: #f0f0f0;
-      padding: 1px 0;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      text-align: center;
-      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
-      z-index: 1000;
-    }
-    .api-footer-content {
+    .book-card {
       display: flex;
-      justify-content: center; 
-      align-items: center;
-      padding: 4px 20px;
-      font-size: 12px;
-      color: #444;
-    }
-    .api-provide {
-      text-align: left;
-      flex: 1;   
-      color: black;
-    }
-    .api-footer-content span {
-      font-weight: 600;
-    }
-    .footer-contact {
-      position: right;
-      font-size: 0.8rem;
-      color: black; 
-    }
-    .search-hint {
-      text-align: center;
-      font-size: 14px; /* 작게 */
-      color: #888888; /* 연한 회색 */
-      margin-top: 4px; /* 검색창과 약간의 간격 */
-      margin-bottom: 16px; /* 아래 요소와 간격 */
-      padding: 0 10px; /* 좌우 여유 — 모바일에서 줄바꿈 자연스럽게 */
-      line-height: 1.4; /* 줄 간격 살짝 여유 */
-      word-wrap: break-word; /* 긴 단어 줄바꿈 허용 */
-    }
-    #backToTop {
-      display: none; /* 처음엔 숨김 */
-      position: fixed;
-      bottom: 150px; /* 화면 아래쪽에서 100px */
-      right: 20px;  /* 화면 오른쪽에서 20px */
-      z-index: 999;
-      font-size: 16px;
-      border: none;
-      outline: none;
-      background-color: #e8a01a; 
-      color: white;
-      cursor: pointer;
-      padding: 12px 16px;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-    }
-    #backToTop:hover {
-      background-color: #d6aa4c;
-    }
-    /* 반응형 스타일 */
-    @media (max-width: 768px) {
-    .header h1 {
-        font-size: 18px;
-    }
-    .search-box {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    .search-box input[type="text"] {
-        width: 100%;
-    }
-    .search-box button {
-        width: 100%;
-    }
-    .book-cover {
-        max-width: 80px;
-    }
-    .book-table th,
-    .book-table td {
-        font-size: 14px;
-        padding: 8px;
-    }
-    }
-    @media (max-width: 480px) {
-    .modal-content {
-        width: 95%;
-        padding: 16px;
-        font-size: 14px;
-    }
-    }
-    @media screen and (max-width: 1024px) {
-    .results {
-        grid-template-columns: repeat(2, 300px); /* 태블릿: 2개 */
-    }
-    #searchInput {
-      height: 36px;       /* 기본보다 작게, 필요하면 더 조절 가능 */
-      padding: 6px 10px;
-      font-size: 14px;    /* 폰트 크기도 살짝 줄임 */
-      box-sizing: border-box;
-    }
-    /* 검색 버튼 높이 맞추기 */
-    #searchButton {
-      height: 36px;
-      font-size: 14px;
-      white-space: nowrap; /* 텍스트 줄바꿈 방지 */
-      display: flex;       /* 텍스트 세로 중앙 정렬을 위한 flex */
-      align-items: center; /* 수직 가운데 정렬 */
-      justify-content: center; /* 가로 가운데 정렬 */
-      padding: 0 12px;     /* 좌우 여백 적당히 유지 */
-    }
-    }
-    @media screen and (max-width: 600px) {
-    .results {
-      grid-template-columns: repeat(1, 300px); /* 모바일: 1개 */
-    }
-    #searchInput {
-      height: 36px;       /* 기본보다 작게, 필요하면 더 조절 가능 */
-      padding: 6px 10px;
-      font-size: 14px;    /* 폰트 크기도 살짝 줄임 */
-      box-sizing: border-box;
-    }
-  /* 검색 버튼 높이 맞추기 */
-    #searchButton {
-      height: 36px;
-      font-size: 14px;
-      white-space: nowrap; /* 텍스트 줄바꿈 방지 */
-      display: flex;       /* 텍스트 세로 중앙 정렬을 위한 flex */
-      align-items: center; /* 수직 가운데 정렬 */
-      justify-content: center; /* 가로 가운데 정렬 */
-      padding: 0 12px;     /* 좌우 여백 적당히 유지 */
-    }
-    }
-    @media (max-width: 1024px) {
-    .dropdown-container {
-      position: fixed;
-      top: 60px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: fit-content;
-      max-width: calc(100vw - 20px);
       flex-direction: column;
-      flex-wrap: wrap;
-      justify-content: center;   
+      justify-content: flex-start;
+      width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 6px;
       box-sizing: border-box;
-      padding: 10px;
+      background: #fff;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
     }
-    .api-footer-content {
-      justify-content: space-between; /* 좌우 끝 정렬 */
-      position: relative; /* footer-contact 절대위치 해제 위해 필요 */
+    .book-card img {
+      width: 100%;
+      max-height: 150px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 8px;
     }
-    .api-provide {
-      flex: none;
-      text-align: left; /* 좌측 정렬 */
-      color: black;
+    .book-info {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      font-size: 14px;
+      margin-bottom: 5px;
     }
-    .footer-contact {
-      position: static; /* 절대 위치 없애서 겹침 방지 */
-      font-size: 0.8rem;
-      color: black;
+    .book-info strong {
+        font-size: 15px;
+        line-height: 1.4;
     }
+    .price {
+      font-size: 13px;
+      color: #666;
+      margin-top: 3px;
     }
-    .spinner {
-      border: 8px solid #f3f3f3; /* 회색 테두리 */
-      border-top: 8px solid #3498db; /* 파란색 테두리 */
+    
+    /* 4개 버튼 그룹 UI 및 반응형 */
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      gap: 5px; 
+      margin-top: auto;
+      padding-top: 10px;
+      flex-wrap: wrap; 
+    }
+    
+    /* 🎨 모든 버튼의 기본 스타일 (흰색 배경, 테두리 추가) */
+    .action-button {
+      flex: 1 1 48%; /* PC/태블릿 기본값: 2개씩 배치 */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 8px 0; 
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.3s ease; /* 전환 효과를 위해 all로 변경 */
+      background-color: #ffffff; 
+      border: 1px solid; 
+      white-space: nowrap;
+    }
+    
+    /* 🎨 개별 버튼 글자색 및 테두리 색상 설정 */
+    .btn-new-ebook { 
+      color: #3f51b5; /* 파랑 계열 글자색 */
+      border-color: #3f51b5;
+    } 
+    .btn-used { 
+      color: #e8a01a; /* 주황 계열 글자색 */
+      border-color: #e8a01a;
+    } 
+    .btn-lib-select { 
+      color: #4caf50; /* 녹색 계열 글자색 */
+      border-color: #4caf50;
+    } 
+    .btn-lib-region { 
+      color: #2196f3; /* 하늘색 계열 글자색 */
+      border-color: #2196f3;
+    } 
+
+    /* 🎨 호버 시 배경색/글자색 반전 효과 */
+    .btn-new-ebook:hover { 
+      background-color: #3f51b5; 
+      color: #ffffff; 
+    } 
+    .btn-used:hover { 
+      background-color: #e8a01a; 
+      color: #ffffff; 
+    } 
+    .btn-lib-select:hover { 
+      background-color: #4caf50; 
+      color: #ffffff; 
+    } 
+    .btn-lib-region:hover { 
+      background-color: #2196f3; 
+      color: #ffffff; 
+    }
+
+    /* 모달 내부 스타일 */
+    .region-select {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .modal-body { 
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    /* 부가 기능 스타일 유지 */
+    .spinner { 
+      border: 8px solid #f3f3f3; 
+      border-top: 8px solid #3498db;
       border-radius: 50%;
       width: 60px;
       height: 60px;
@@ -411,129 +194,166 @@ if(window.wcs) {
       transform: translate(-50%, -50%);
       z-index: 9999;
     }
-
     @keyframes spin {
       0% { transform: translate(-50%, -50%) rotate(0deg); }
       100% { transform: translate(-50%, -50%) rotate(360deg); }
     }
-    .button-group {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      margin-top: auto;
-      padding-top: 10px;
-      flex-wrap: nowrap;
+    #loadMoreBtn { /* 더보기 버튼 위치 조정 */
+      margin: 20px auto 100px; 
     }
-    .action-button {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      background-color: #f0f0f0;
-      color: #333;
-      padding: 10px 0;
-      text-decoration: none;
-      border-radius: 6px;
-      font-weight: bold;
-      font-size: 14px;
-      cursor: pointer;
-      border: 1px solid #ccc;
-      transition: background-color 0.3s ease;
-    }
-    .action-button:hover {
-      background-color: #e0e0e0;
-    }
-    @media (max-width: 1024px) {
-    .button-group {
-      flex-direction: row;
-      flex-wrap: nowrap;
-    }
-    }
-  /* 모바일 화면(예: 최대 너비 768px)에서만 보이도록 */
-    @media (max-width: 1024px) {
-    #shareButton {
-      display: block;
-    }
-    }
-    #mobileShareContainer {
-      display: none;
-      text-align: center;
-      margin-top: 10px;
-    }
-    #shareButton {
-      display: none;
-      background: none;
+    #backToTop { 
+      display: none; 
+      position: fixed;
+      bottom: 50px; 
+      right: 20px;
+      z-index: 999;
+      font-size: 16px;
       border: none;
+      outline: none;
+      background-color: #e8a01a;
+      color: white;
       cursor: pointer;
-      padding: 0;
-      margin-left: 8px;  /* 사이트 제목과 약간 간격 */
-      vertical-align: middle;
+      padding: 12px 16px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     }
-    #shareButton svg {
-      width: 26px;
-      height: 26px;
-      fill: #555
+    .api-footer { 
+      width: 100%;
+      background-color: #f0f0f0;
+      padding: 1px 0;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      text-align: center;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+      z-index: 1000;
     }
-  /* 모바일에서만 표시 */
+    .api-footer-content { 
+      display: flex;
+      justify-content: space-between; 
+      align-items: center;
+      padding: 4px 20px;
+      font-size: 12px;
+      color: #444;
+    }
+    .site-title { 
+      font-size: clamp(32px, 5vw, 56px);
+      max-width: 100%;
+      text-align: center;
+      margin: 0 auto 2rem;
+    }
+    #shareButton { 
+      display: none;
+    }
+    
+    /* 모바일 반응형 스타일 */
     @media (max-width: 1024px) {
-    #shareButton {
-      display: inline-block;
+      .results {
+        grid-template-columns: repeat(2, 300px);
+      }
+      #searchInput {
+        width: 75%;
+      }
+      #searchInput::placeholder {
+        font-size: 13px; /* 모바일에서 더 작은 글자 크기 */
+        /* color: #cccccc; <- 필요하면 더 희미한 색상을 재정의할 수 있습니다. */
+      }
+      #shareButton { 
+        display: inline-block;
+      }
+      .api-footer-content {
+        flex-direction: column;
+        align-items: center;
+        padding: 4px 10px;
+      }
+      /* ⭐⭐⭐ 요청 사항 반영: 모바일에서 버튼을 2x2 배열로 설정 ⭐⭐⭐ */
+      .action-button {
+        flex: 1 1 48%; /* 한 줄에 2개씩 배치되도록 48%로 유지 */
+        font-size: 14px;
+        padding: 10px 0;
+      }
+      .button-group {
+          gap: 10px;
+      }
     }
-    }  
-</style>
+    @media (max-width: 600px) {
+      .results {
+        grid-template-columns: repeat(1, 300px);
+      }
+    }
+  </style>
 </head>
 <body>
-  <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KCW6JKPC"
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-  <!-- End Google Tag Manager (noscript) -->
+  <header>
+    <h1 class="site-title">📚책! 한눈에      
+    </h1>
+  </header>
 
-  <h1 class="site-title">📚 책! 한눈에 <button id="shareButton" aria-label="공유하기">
-    <!-- SVG 아이콘 -->
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#555" viewBox="0 0 24 24">
-      <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.02-4.11c.53.5 1.23.81 2.07.81 1.66 0 3-1.34 3-3S19.66 2 18 2s-3 1.34-3 3c0 .24.04.47.09.7L8.07 9.81C7.54 9.31 6.84 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.84 0 1.54-.31 2.07-.81l7.13 4.19c-.05.21-.07.43-.07.66 0 1.66 1.34 3 3 3s3-1.34 3-3-1.34-3-3-3z"/>
-    </svg>
-  </button></h1>
-
-  <div class="search-container">
-    <input id="searchInput" type="text" placeholder="책 제목, 작가, 출판사 입력" />
-    <button id="searchButton">검색</button>
+  <div class="search-bar">
+    <input type="text" id="searchInput" class="form-control" placeholder="책제목, 저자, 출판사 최소 하나 이상 입력">
+    <button id="searchBtn" class="btn btn-primary ms-2">검색</button>
   </div>
-<div class="search-container">
-  <!-- 기존 검색창 코드 -->
-</div>
-
-<div class="search-hint">
-  관심 도서의 새책 | 전자책 | 중고책 구매정보와, 공공도서관 대여정보를 한 곳에서 확인합니다.
-</div>
-
-<div class="results-wrapper">
-  <div class="results">
-    <!-- 도서카드들 -->
-  </div>
-</div>
-<div id="loadingSpinner" class="spinner" style="display: none;"></div>
-
-  <div class="dropdown-container">
-    <select id="regionSelect"><option value="">--지역 선택--</option></select>
-    <select id="districtSelect" disabled><option value="">--시군구 선택--</option></select>
-    <select id="librarySelect" disabled><option value="">--도서관 선택--</option></select>
-    <button id="checkLibraryBtn" disabled>확인</button>
-    <button id="closeDropdownBtn">닫기</button>
+  
+  <div class="search-hint" style="text-align: center; font-size: 14px; color: #888888; margin-bottom: 16px; padding: 0 25px">
+    관심 도서의 새책 | 전자책 | 중고책 구매정보와, 공공도서관 대여정보를 한 곳에서 확인합니다.
   </div>
 
-  <div class="results" id="results"></div>
-  <button id="loadMoreBtn" style="display:none;">더보기</button>  
+  <div class="results-wrapper">
+    <div class="results" id="results">
+      </div>
+  </div>
 
-  <!-- ✅ 모달 구조 추가 -->
-  <div id="libraryModal" class="modal">
-    <div class="modal-content">
-      <span class="modal-close" id="closeModalBtn">&times;</span>
-      <div><strong>[책 제목]</strong> <span id="modalBookTitle"></span></div>
-      <div id="libraryModalContent">로딩 중...</div>
+  <div id="loadingSpinner" class="spinner" style="display: none;"></div>
+  
+  <button id="loadMoreBtn" class="btn btn-secondary" style="display:none; margin: 20px auto 100px;">더보기</button>  
+
+  <div class="modal fade" id="libraryModal" tabindex="-1" aria-labelledby="libraryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="libraryModalLabel">대여정보(도서관별): <span id="modalLibBookTitle"></span></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-muted small mb-2">
+            📘 대출현황은 조회일 기준 하루 전 상황으로, 실시간 현황은 해당 도서관에 문의하시기 바랍니다.
+          </p>
+          <div class="region-select">
+            <select id="regionSelect1" class="form-select"><option value="">--지역 선택--</option></select>
+            <select id="districtSelect1" class="form-select" disabled><option value="">--시군구 선택--</option></select>
+          </div>
+          <select id="librarySelect" class="form-select mb-3" disabled><option value="">--도서관 선택--</option></select>
+          <button id="checkLibraryBtn" class="btn btn-success mb-3">검색</button>
+          <div id="libraryResult"></div>
+        </div>
+      </div>
     </div>
   </div>
+
+  <div class="modal fade" id="regionModal" tabindex="-1" aria-labelledby="regionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="regionModalLabel">대여정보(지역별): <span id="modalRegionBookTitle"></span></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-muted small mb-2">
+            📘 대출현황은 조회일 기준 하루 전 상황으로, 실시간 현황은 해당 도서관에 문의하시기 바랍니다.
+          </p>
+          <div class="region-select">
+            <select id="regionSelect2" class="form-select"><option value="">--지역 선택--</option></select>
+            <select id="districtSelect2" class="form-select" disabled><option value="">--시군구 선택--</option></select>
+          </div>
+          <button id="checkRegionBtn" class="btn btn-success mb-3">검색</button>
+          <div id="regionResult"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 <footer class="api-footer">
   <div class="api-footer-content">
       <div class="api-provide">API제공: 알라딘 | 도서관정보나루</div>
@@ -541,324 +361,375 @@ if(window.wcs) {
   </div>
 </footer>
 <button id="backToTop" title="맨 위로 가기">⬆ TOP</button>
-  <script>
-    document.getElementById('searchButton').addEventListener('click', searchBooks);
-    document.getElementById('searchInput').addEventListener('keypress', function(event) {
-      if (event.key === 'Enter') {
-        event.preventDefault();
-        searchBooks();
-      }
-    });
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    const resultsContainer = document.getElementById('results');
-    const loadMoreBtn = document.getElementById('loadMoreBtn');
-    const dropdownContainer = document.querySelector('.dropdown-container');
-    const dropdownRegionSelect = document.getElementById('regionSelect');
-    const dropdownDistrictSelect = document.getElementById('districtSelect');
-    const dropdownLibrarySelect = document.getElementById('librarySelect');
-    const checkLibraryBtn = document.getElementById('checkLibraryBtn');
-    const closeDropdownBtn = document.getElementById('closeDropdownBtn');
-    const modal = document.getElementById('libraryModal');
-    const modalContent = document.getElementById('libraryModalContent');
-    const closeModalBtn = document.getElementById('closeModalBtn');
+<script>
+// ===================================================================
+// 변수 설정 및 초기화
+// ===================================================================
+const searchBtn = document.getElementById("searchBtn");
+const searchInput = document.getElementById("searchInput");
+const resultsDiv = document.getElementById("results");
+const loadMoreBtn = document.getElementById('loadMoreBtn');
+const loadingSpinner = document.getElementById('loadingSpinner');
 
-    let libraryData = {};
-    let selectedISBN = null;
-    let selectedTitle = null;
-    let selectedDistrict = null;  // [추가] 시군구명 저장용
-    let allBooks = [];
-    let displayedCount = 0;
-    const PAGE_SIZE = 12;
+// 1. 도서관별 모달 변수 (index-1.txt 복원)
+const libraryModalElement = document.getElementById("libraryModal");
+const libraryModal = new bootstrap.Modal(libraryModalElement);
+const regionSelect1 = document.getElementById("regionSelect1");
+const districtSelect1 = document.getElementById("districtSelect1");
+const librarySelect = document.getElementById("librarySelect");
+const checkLibraryBtn = document.getElementById("checkLibraryBtn");
+const libraryResultDiv = document.getElementById("libraryResult");
 
-    function formatPrice(num) {
-      return Number(num).toLocaleString() + '원';
-    }
+// 2. 지역별 모달 변수 (index-2.txt 유지)
+const regionModalElement = document.getElementById("regionModal");
+const regionModal = new bootstrap.Modal(regionModalElement);
+const regionSelect2 = document.getElementById("regionSelect2");
+const districtSelect2 = document.getElementById("districtSelect2");
+const checkRegionBtn = document.getElementById("checkRegionBtn");
+const regionResultDiv = document.getElementById("regionResult");
 
-    function createBookCard(book) {
+
+let allLibraryData = null; 
+let selectedBook = null; 
+let allBooks = []; 
+let displayedCount = 0; 
+const PAGE_SIZE = 12; 
+
+// ===================================================================
+// 유틸리티 함수 (index-1.txt 유지)
+// ===================================================================
+function formatPrice(num) {
+  return Number(num).toLocaleString() + '원';
+}
+function extractItemId(url) {
+  const match = url.match(/ItemId=(\d+)/);
+  return match ? match[1] : '';
+}
+function isMobile() {
+  return /Mobi|Android/i.test(navigator.userAgent);
+}
+
+// ===================================================================
+// 1️⃣ 도서 카드 생성 (4개 버튼 UI 및 반응형 적용)
+// ===================================================================
+function createBookCard(book) { 
   const priceNew = book.priceStandard ? formatPrice(book.priceStandard) : '정보 없음';
   const priceSale = book.priceSales ? formatPrice(book.priceSales) : '정보 없음';
-
   const itemId = extractItemId(book.link);
-
-  // 새책/전자책 링크
-  const newLinkPC = book.link;
-  const newLinkMobile = `https://www.aladin.co.kr/m/mproduct.aspx?ItemId=${itemId}`;
-  const newLinkFinal = isMobile() ? newLinkMobile : newLinkPC;
-
-  // 중고책 링크
-  const usedLinkPC = `https://www.aladin.co.kr/search/wsearchresult.aspx?SearchTarget=Used&KeyWord=${encodeURIComponent(book.title)}`;
-  const usedLinkMobile = `https://www.aladin.co.kr/m/museditemall.aspx?ItemId=${itemId}&TabType=1&Fix=1`;
-  const usedLinkFinal = isMobile() ? usedLinkMobile : usedLinkPC;
+  
+  const newLinkFinal = isMobile() ? `https://www.aladin.co.kr/m/mproduct.aspx?ItemId=${itemId}` : book.link;
+  const usedLinkFinal = isMobile() ? `https://www.aladin.co.kr/m/museditemall.aspx?ItemId=${itemId}&TabType=1&Fix=1` 
+                                  : `https://www.aladin.co.kr/search/wsearchresult.aspx?SearchTarget=Used&KeyWord=${encodeURIComponent(book.title)}`;
 
   const card = document.createElement('div');
   card.className = 'book-card';
 
   card.innerHTML = `
     <img src="${book.cover}" alt="표지 이미지">
-    <div class="book-info">
-      <h3>${book.title}</h3>
-      <p>${book.author}</p>
-      <p>${book.publisher} (${book.pubDate})</p>
+    <div class="book-info mt-2">
+      <strong>${book.title}</strong><br>
+      ${book.author}<br>
+      ${book.publisher} (${book.pubDate})
       <p class="price">정가: ${priceNew} / 할인가: ${priceSale}</p>
+      
       <div class="button-group">
-        <a href="${newLinkFinal}" target="_blank" class="action-button">새책/전자책</a>
-        <a href="${usedLinkFinal}" target="_blank" class="action-button">중고책</a>
-        <button type="button" class="action-button library-status-link"
+        <a href="${newLinkFinal}" target="_blank" class="action-button btn-new-ebook">새책/전자책</a>
+        
+        <a href="${usedLinkFinal}" target="_blank" class="action-button btn-used">중고책</a>
+        
+        <button type="button" class="action-button btn-lib-select"
                 data-isbn="${book.isbn13}" 
-                data-title="${book.title}">
-          도서관<br>대여정보
+                data-title="${book.title.replace(/'/g, "\\'")}"
+                onclick="openLibraryModal('${book.isbn13}','${book.title.replace(/'/g, "\\'")}')">
+          대여정보<br>(도서관별)
+        </button>
+        
+        <button type="button" class="action-button btn-lib-region"
+                data-isbn="${book.isbn13}" 
+                data-title="${book.title.replace(/'/g, "\\'")}"
+                onclick="openRegionModal('${book.isbn13}','${book.title.replace(/'/g, "\\'")}')">
+          대여정보<br>(지역별)
         </button>
       </div>
     </div>
   `;
   return card;
 }
-function extractItemId(url) {
-  const match = url.match(/ItemId=(\d+)/);
-  return match ? match[1] : '';
+
+// ===================================================================
+// 2️⃣ 도서 검색, 페이징 (index-1.txt 로직 유지 + '더보기' 가시성 수정)
+// ===================================================================
+searchBtn.addEventListener("click", searchBooks);
+searchInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") searchBooks();
+});
+loadMoreBtn.addEventListener('click', renderBooks);
+
+function renderBooks() {
+  const toShow = allBooks.slice(displayedCount, displayedCount + PAGE_SIZE);
+  toShow.forEach(book => {
+    resultsDiv.appendChild(createBookCard(book));
+  });
+  displayedCount += toShow.length;
+
+  // '더보기' 버튼 가시성 로직 (더 볼 책이 있을 때만 보이도록)
+  if (displayedCount < allBooks.length) {
+    loadMoreBtn.style.display = 'block';
+    loadMoreBtn.disabled = false;
+  } else {
+    loadMoreBtn.style.display = 'none';
+  }
 }
 
-function isMobile() {
-  return /Mobi|Android/i.test(navigator.userAgent);
-}
-    function renderBooks() {
-      const toShow = allBooks.slice(displayedCount, displayedCount + PAGE_SIZE);
-      toShow.forEach(book => {
-        resultsContainer.appendChild(createBookCard(book));
-      });
-      displayedCount += toShow.length;
+function searchBooks() {
+  const query = searchInput.value.trim();
+  if (!query) return alert('검색어를 입력하세요.');
 
-      if (displayedCount < allBooks.length) {
-        loadMoreBtn.style.display = 'block';
-        loadMoreBtn.disabled = false;
-      } else {
-        loadMoreBtn.style.display = 'none';
-      }
+  resultsDiv.innerHTML = '';
+  loadMoreBtn.style.display = 'none'; // 검색 시작 시 숨김
+  displayedCount = 0;
+  allBooks = [];
+  loadingSpinner.style.display = 'block';
 
-      document.querySelectorAll('.library-status-link').forEach(link => {
-        link.removeEventListener('click', onLibraryStatusClick);
-        link.addEventListener('click', onLibraryStatusClick);
-      });
-    }
-
-    function onLibraryStatusClick(e) {
-      e.preventDefault();
-      selectedISBN = e.target.dataset.isbn;
-      selectedTitle = e.target.dataset.title;
-      console.log('선택된 ISBN:', selectedISBN);
-      console.log('선택된 도서명:', selectedTitle);
-      dropdownContainer.style.display = 'flex';
-    }
-
-    function searchBooks() {
-      const query = document.getElementById('searchInput').value.trim();
-      if (!query) return alert('검색어를 입력하세요.');
-
-      dropdownContainer.style.display = 'none';
-      selectedISBN = null;
-      resultsContainer.innerHTML = '';
-      loadMoreBtn.style.display = 'none';
-      displayedCount = 0;
-      allBooks = [];
-      // ✅ 스피너 보이기 시작
-      document.getElementById('loadingSpinner').style.display = 'block';
-
-      fetch(`/search?query=${encodeURIComponent(query)}`)
-        .then(res => res.json())
-        .then(data => {
-          if (!data.item || data.item.length === 0) {
-        resultsContainer.innerHTML = '<p>검색 결과가 없습니다.</p>';
+  fetch(`/search?query=${encodeURIComponent(query)}`)
+    .then(res => res.json())
+    .then(data => {
+      if (!data.item || data.item.length === 0) { 
+        resultsDiv.innerHTML = '<p>검색 결과가 없습니다.</p>';
       } else {
         allBooks = data.item;
         renderBooks();
       }
     })
+    .catch((err) => {
+      console.error("검색 오류:", err);
+      resultsDiv.innerHTML = '<p>검색 중 오류가 발생했습니다.</p>';
+    })
     .finally(() => {
-      // ✅ API 요청 끝났으니 스피너 숨김
-      document.getElementById('loadingSpinner').style.display = 'none';
+      loadingSpinner.style.display = 'none';
     });
 }
 
-    loadMoreBtn.addEventListener('click', renderBooks);
 
-    fetch('/libraries')
-      .then(res => res.json())
-      .then(data => {
-        libraryData = data;
-        data.regions.forEach(region => {
-          const opt = document.createElement('option');
-          opt.value = region;
-          opt.textContent = region;
-          dropdownRegionSelect.appendChild(opt);
-        });
-      });
-
-    dropdownRegionSelect.addEventListener('change', () => {
-      const region = dropdownRegionSelect.value;      
-      
-      dropdownDistrictSelect.innerHTML = '<option value="">--시군구 선택--</option>';
-      dropdownLibrarySelect.innerHTML = '<option value="">--도서관 선택--</option>';
-      dropdownDistrictSelect.disabled = true;
-      dropdownLibrarySelect.disabled = true;
-      checkLibraryBtn.disabled = true;
-
-      selectedDistrict = null;  
-
-      if (!region || !libraryData.districtsByRegion[region]) return;
-      
-      libraryData.districtsByRegion[region].forEach(district => {
-        const opt = document.createElement('option');
-        opt.value = district;
-        opt.textContent = district;
-        dropdownDistrictSelect.appendChild(opt);
-      });
-
-      dropdownDistrictSelect.disabled = false;
-    });
-
-        
-    dropdownDistrictSelect.addEventListener('change', () => {
-      const district = dropdownDistrictSelect.value;
-      const region = dropdownRegionSelect.value;
-
-      dropdownLibrarySelect.innerHTML = '<option value="">--도서관 선택--</option>';
-      dropdownLibrarySelect.disabled = true;
-      checkLibraryBtn.disabled = true;
-
-      selectedDistrict = district;  // [추가] 시군구 선택 저장
-
-      const key = `${region.trim()}|${district.trim()}`;
-      if (!district || !libraryData.librariesByDistrict[key]) return;
-
-      updateLibrarySelect(district);
-    });
-
-    dropdownLibrarySelect.addEventListener('change', () => {
-      checkLibraryBtn.disabled = !dropdownLibrarySelect.value;
-    });
-
-    checkLibraryBtn.addEventListener('click', () => {
-      const libCode = dropdownLibrarySelect.value;
-      console.log('확인 버튼 클릭 - 선택된 ISBN:', selectedISBN);
-      console.log('선택된 도서관 코드:', libCode);
-
-      if (!selectedISBN || !libCode) {
-        console.log('ISBN 또는 도서관 코드가 없습니다. 요청을 중단합니다.');
-        return;
-      }
-      
-      const selectedLibraryName = dropdownLibrarySelect.selectedOptions[0].textContent;
-
-      // [변경] 모달 첫 줄 - [책 제목] 선택된 책 제목 형태로 표현
-      // modalContent.innerHTML 대체 전에 아래 span에 책 제목 세팅 (span은 HTML에 있어야 함)
-      document.getElementById('modalBookTitle').textContent = selectedTitle || '';
-      // ✅ 스피너 보이기 시작
-      document.getElementById('loadingSpinner').style.display = 'block';
-
-      fetch(`/check_library?isbn=${selectedISBN}&libraryCode=${libCode}`)
-        .then(res => res.json())
-        .then(data => {
-          console.log('서버 응답 데이터:', data);
-          // [변경] 출력 형식 변경 및 시군구명 추가, '여기' 링크 삽입
-          let html = `
-            <p><strong>[${selectedLibraryName}]</strong><br>
-            소장 여부: <strong>${data.results[0].hasBook ? '소장중' : '미소장'}</strong><br>
-            대출 가능 여부: <strong>${data.results[0].loanAvailable ? '가능' : '불가능'}</strong></p>
-            <p style="font-size: 13px; color: #777; margin-top: 10px;">
-              ※ 대출현황은 조회일 기준, 하루 전 상황이며, 실시간 현황은 해당 도서관에 문의 바랍니다.
-            </p>
-            
-          `;
-
-          modalContent.innerHTML = html;
-          modal.style.display = 'block';
-
-        })
-        .catch(err => {
-      console.error('요청 실패:', err);
-      modalContent.innerHTML = `<p style="color:red;">요청 실패: ${err}</p>`;
-      modal.style.display = 'block';
+// ===================================================================
+// 3️⃣ 도서관 데이터 로드 (두 모달 공통 사용)
+// ===================================================================
+function loadLibraries() {
+  if (allLibraryData) return Promise.resolve(allLibraryData);
+  loadingSpinner.style.display = 'block';
+  return fetch("/libraries")
+    .then((res) => res.json())
+    .then((data) => {
+      allLibraryData = data;
+      // 지역 목록 채우기 (두 모달의 Select에 모두 사용)
+      const regionsHtml = `<option value="">--지역 선택--</option>` + 
+                          data.regions.map(r => `<option value="${r}">${r}</option>`).join('');
+      regionSelect1.innerHTML = regionsHtml;
+      regionSelect2.innerHTML = regionsHtml;
+      return data;
     })
     .finally(() => {
-      // ✅ API 요청 끝났으니 스피너 숨김
-      document.getElementById('loadingSpinner').style.display = 'none';
-        });
+        loadingSpinner.style.display = 'none';
     });
+}
+loadLibraries();
 
-    closeDropdownBtn.addEventListener('click', () => {
-      dropdownContainer.style.display = 'none';
-      dropdownRegionSelect.selectedIndex = 0;
-      dropdownDistrictSelect.innerHTML = '<option value="">--시군구 선택--</option>';
-      dropdownLibrarySelect.innerHTML = '<option value="">--도서관 선택--</option>';
-      dropdownDistrictSelect.disabled = true;
-      dropdownLibrarySelect.disabled = true;
-      checkLibraryBtn.disabled = true;
-      selectedDistrict = null;  // [추가] 시군구 초기화
+
+// ===================================================================
+// 4️⃣ '도서관별' 모달 로직 (index-1.txt 기능 복원 및 통합)
+// ===================================================================
+function openLibraryModal(isbn, title) {
+  selectedBook = { isbn, title };
+  document.getElementById('modalLibBookTitle').textContent = title; 
+  libraryResultDiv.innerHTML = ""; 
+  
+  // 모달 열 때 선택창 초기화
+  regionSelect1.selectedIndex = 0;
+  districtSelect1.innerHTML = "<option value=''>--시군구 선택--</option>";
+  districtSelect1.disabled = true;
+  librarySelect.innerHTML = "<option value=''>--도서관 선택--</option>";
+  librarySelect.disabled = true;
+
+  libraryModal.show();
+}
+
+// 도서관별: 시/군/구 드롭다운 업데이트 (index-1.txt 로직 기반)
+regionSelect1.addEventListener("change", () => {
+  const region = regionSelect1.value;
+  districtSelect1.innerHTML = "<option value=''>--시군구 선택--</option>";
+  districtSelect1.disabled = true;
+  librarySelect.innerHTML = "<option value=''>--도서관 선택--</option>";
+  librarySelect.disabled = true;
+
+  if (!region || !allLibraryData.districtsByRegion[region]) return;
+  
+  allLibraryData.districtsByRegion[region].forEach((d) => {
+    districtSelect1.innerHTML += `<option value="${d}">${d}</option>`;
+  });
+  districtSelect1.disabled = false;
+});
+
+// 도서관별: 도서관 드롭다운 업데이트 (index-1.txt 로직 기반)
+districtSelect1.addEventListener("change", () => {
+  const region = regionSelect1.value;
+  const district = districtSelect1.value;
+  librarySelect.innerHTML = "<option value=''>--도서관 선택--</option>";
+  librarySelect.disabled = true;
+
+  if (!region || !district) return;
+
+  const key = `${region}|${district}`;
+  const libraries = allLibraryData.librariesByDistrict[key] || [];
+  
+  libraries.forEach((library) => {
+    const option = document.createElement('option');
+    option.value = library.libraryCode;
+    option.textContent = library.libraryName;
+    librarySelect.appendChild(option);
+  });
+  librarySelect.disabled = libraries.length === 0;
+});
+
+// 도서관별: 도서관 검색 버튼 (index-1.txt 로직 기반)
+checkLibraryBtn.addEventListener("click", () => {
+  const libraryCode = librarySelect.value;
+  if (!libraryCode || !selectedBook) return alert("도서관과 도서를 선택하세요.");
+
+  loadingSpinner.style.display = 'block';
+  libraryResultDiv.innerHTML = "조회 중...";
+
+  fetch(`/check_library?isbn=${selectedBook.isbn}&libraryCode=${libraryCode}`)
+    .then((res) => res.json())
+    .then((data) => {
+      // 결과 HTML 생성 (index-1.txt 스타일)
+      let html = "";
+      if (data.results && data.results.length > 0) {
+          const r = data.results[0];
+          html = `
+            <table class="table table-bordered table-sm mt-3">
+              <tbody>
+                <tr><th>도서관</th><td>${r.libraryName}</td></tr>
+                <tr><th>소장 여부</th><td>${r.hasBook ? "소장중" : "미소장"}</td></tr>
+                <tr><th>대출 가능</th><td>${r.loanAvailable ? "가능" : "불가능"}</td></tr>
+              </tbody>
+            </table>
+          `;
+      } else {
+          html = `<p class="text-danger mt-3">정보를 찾을 수 없거나 오류가 발생했습니다.</p>`;
+      }
+      libraryResultDiv.innerHTML = html;
+    })
+    .catch((err) => {
+      console.error("도서관별 검색 오류:", err);
+      libraryResultDiv.innerHTML = "오류 발생";
+    })
+    .finally(() => {
+      loadingSpinner.style.display = 'none';
     });
+});
 
-    closeModalBtn.addEventListener('click', () => {
-      modal.style.display = 'none';
+
+// ===================================================================
+// 5️⃣ '지역별' 모달 로직 (index-2.txt 로직 유지)
+// ===================================================================
+function openRegionModal(isbn, title) {
+  selectedBook = { isbn, title };
+  document.getElementById('modalRegionBookTitle').textContent = title; // 책 제목 표시
+  regionResultDiv.innerHTML = ""; // 이전 결과 초기화
+  
+  // 모달 열 때 지역 선택 초기화
+  regionSelect2.selectedIndex = 0;
+  districtSelect2.innerHTML = "<option value=''>--시군구 선택--</option>";
+  districtSelect2.disabled = true;
+
+  regionModal.show();
+}
+
+// 지역별: 시/군/구 드롭다운 업데이트 (index-2.txt 로직)
+regionSelect2.addEventListener("change", () => {
+  const region = regionSelect2.value;
+  districtSelect2.innerHTML = "<option value=''>--시군구 선택--</option>";
+  districtSelect2.disabled = true;
+
+  if (!region || !allLibraryData.districtsByRegion[region]) return;
+  
+  allLibraryData.districtsByRegion[region].forEach((d) => {
+    districtSelect2.innerHTML += `<option value="${d}">${d}</option>`;
+  });
+  districtSelect2.disabled = false;
+});
+
+// 지역별: 도서관 검색 버튼 (index-2.txt 로직)
+checkRegionBtn.addEventListener("click", () => {
+  const region = regionSelect2.value;
+  const district = districtSelect2.value;
+  if (!region || !district || !selectedBook) return alert("지역과 시군구를 선택하세요.");
+
+  loadingSpinner.style.display = 'block';
+  regionResultDiv.innerHTML = "조회 중...";
+
+  fetch(`/check_region?isbn=${selectedBook.isbn}&region=${region}&district=${district}`)
+    .then((res) => res.json())
+    .then((data) => {
+      if (!data.results || data.results.length === 0) {
+        regionResultDiv.innerHTML = "해당 지역의 도서관 정보를 찾을 수 없습니다.";
+        return;
+      }
+
+      // 테이블 결과 생성 (index-2.txt 스타일)
+      let html = `
+        <table class="table table-bordered table-striped mt-3">
+          <thead>
+            <tr>
+              <th>도서관명</th>
+              <th>소장여부</th>
+              <th>대출가능</th>
+            </tr>
+          </thead>
+            <tbody>
+            ${data.results.map(r => `
+              <tr>
+                <td>${r.libraryName}</td>
+                <td>${r.hasBook ? "소장중" : "미소장"}</td>
+                <td>${r.loanAvailable ? "가능" : "불가능"}</td>
+              </tr>`).join("")}
+          </tbody>
+        </table>
+      `;
+      regionResultDiv.innerHTML = html;
+    })
+    .catch((err) => {
+      console.error("지역별 검색 오류:", err);
+      regionResultDiv.innerHTML = "오류 발생";
+    })
+    .finally(() => {
+      loadingSpinner.style.display = 'none';
     });
+});
 
-    window.addEventListener('click', function (e) {
-      if (e.target === modal) modal.style.display = 'none';
-    });
 
-    function updateLibrarySelect(district) {
-      const librarySelect = document.getElementById('librarySelect');
-      librarySelect.innerHTML = '<option value="">--도서관 선택--</option>';
-
-      const selectedRegion = dropdownRegionSelect.value.trim();
-      const trimmedDistrict = district.trim();  // 혹시 공백 있을까 봐
-      const key = `${selectedRegion}|${trimmedDistrict}`;
-      console.log('📌 사용 중인 key:', key);
-      console.log('📚 전체 keys:', Object.keys(libraryData.librariesByDistrict));
-
-      const libraries = libraryData.librariesByDistrict[key] || [];
-      
-      libraries.forEach((library) => {
-        const option = document.createElement('option');
-        option.value = library.libraryCode;
-        option.textContent = library.libraryName;
-        librarySelect.appendChild(option);
-      });
-
-      librarySelect.disabled = libraries.length === 0;
-    }
-
-// 스크롤 이벤트 감지
-  window.onscroll = function() {scrollFunction()};
-
-  function scrollFunction() {
-    const backToTopButton = document.getElementById("backToTop");
-    if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-      backToTopButton.style.display = "block";
-    } else {
-      backToTopButton.style.display = "none";
-    }
+// ===================================================================
+// 6️⃣ 부가 기능 (index-1.txt 로직 유지)
+// ===================================================================
+window.onscroll = function() {scrollFunction()};
+function scrollFunction() {
+  const backToTopButton = document.getElementById("backToTop");
+  if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+    backToTopButton.style.display = "block";
+  } else {
+    backToTopButton.style.display = "none";
   }
-
-  // 클릭 시 상단으로 이동
-  document.getElementById("backToTop").addEventListener("click", function() {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
+}
+document.getElementById("backToTop").addEventListener("click", function() {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
   });
+});
 
-  document.getElementById('shareButton').addEventListener('click', () => {
-    if (navigator.share) {
-      navigator.share({
-        title: document.title,
-        text: '이 사이트에서 책 검색하고 대출 정보 확인해보세요!',
-        url: window.location.href
-      }).catch(console.error);
-    } else {
-      alert('이 브라우저는 공유 기능을 지원하지 않습니다.');
-    }
-  });
-  </script>  
-
-
+</script>
 </body>
 </html>
