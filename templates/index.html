@@ -622,12 +622,8 @@ checkLibraryBtn.addEventListener("click", () => {
             <table class="table table-bordered table-sm mt-3">
               <tbody>
                 <tr><th>도서관</th><td>${r.libraryName}</td></tr>
-
                 <tr><th>소장 여부</th><td>${hasBookText}</td></tr>
-                <tr><th>대출 가능</th><td>${loanAvailableText}</td></tr>
-
-                <tr><th>소장 여부</th><td>${r.hasBook ? "소장중" : "미소장"}</td></tr>
-                <tr><th>대출 가능</th><td>${r.loanAvailable ? "가능" : "불가능"}</td></tr>
+                <tr><th>대출 가능</th><td>${loanAvailableText}</td></tr>             
 
               </tbody>
             </table>
@@ -718,15 +714,7 @@ checkRegionBtn.addEventListener("click", () => {
                 <td>${loanAvailableText}</td>
               </tr>`
             }).join("")}
-
-
-            ${data.results.map(r => `
-              <tr>
-                <td>${r.libraryName}</td>
-                <td>${r.hasBook ? "소장중" : "미소장"}</td>
-                <td>${r.loanAvailable ? "가능" : "불가능"}</td>
-              </tr>`).join("")}
-
+           
           </tbody>
         </table>
       `;
