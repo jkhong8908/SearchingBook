@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, send_from_directory
 import requests
 import pandas as pd
 import os
@@ -6,11 +6,10 @@ import re
 from time import time
 from functools import wraps
 from flask_caching import Cache
-from flask import send_from_directory
 
 app = Flask(__name__)
 
-# 캐시 설정 (메모리 캐시)
+# 캐시 설정
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 @app.route('/')
@@ -29,35 +28,34 @@ def sitemap():
 def index_html():
     return render_template('index.html')
 
-# 환경변수 또는 config로 설정하세요.
-ALADIN_API_KEY = 'ttbj0124hkm1509002'  # 알라딘 API 키
-LIBRARY_API_KEY = 'c7a9b167110c242ad1634d7898b6970778f961fcefc0e6da9d52273b0ebb53ea'  # 공공도서관 API 키
 
-# 도서관 목록 엑셀 파일 경로
+# -----------------------------
+# API 키 및 파일 경로
+# -----------------------------
+ALADIN_API_KEY = 'ttbj0124hkm1509002'
+LIBRARY_API_KEY = 'c7a9b167110c242ad1634d7898b6970778f961fcefc0e6da9d52273b0ebb53ea'
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 LIBRARY_LIST_FILE = os.path.join(BASE_DIR, 'library_list.xlsx')
 
-# 도서관 목록 캐시
 library_data = None
 
 
+# -----------------------------
+# Helper: 주소 분리
+# -----------------------------
 def split_address(addr):
-    """
-    주소에서 시도(지역)와 시군구(구/군) 분리
-    예: '서울특별시 강남구 역삼동 123-45' -> ('서울특별시', '강남구')
-    """
     if not isinstance(addr, str):
         return '', ''
-
     pattern = r'^(서울특별시|부산광역시|대구광역시|인천광역시|광주광역시|대전광역시|울산광역시|세종특별자치시|경기도|강원도|충청북도|충청남도|전라북도|전라남도|경상북도|경상남도|제주특별자치도)\s+([^\s]+)'
     match = re.match(pattern, addr)
-    if match:
-        return match.group(1), match.group(2)
-    else:
-        return '', ''
+    return match.groups() if match else ('', '')
 
 
-def load_library_data():  # 캐싱 목적
+# -----------------------------
+# 도서관 목록 로드
+# -----------------------------
+def load_library_data():
     global library_data
     if library_data is not None:
         return library_data
@@ -69,20 +67,10 @@ def load_library_data():  # 캐싱 목적
     df = pd.read_excel(LIBRARY_LIST_FILE, usecols=['도서관명', '주소', '도서관코드'])
 
     def extract_region(addr):
-        if not isinstance(addr, str):
-            return ''
-        parts = addr.split()
-        if len(parts) > 0:
-            return parts[0]
-        return ''
+        return addr.split()[0] if isinstance(addr, str) and len(addr.split()) > 0 else ''
 
     def extract_district(addr):
-        if not isinstance(addr, str):
-            return ''
-        parts = addr.split()
-        if len(parts) > 1:
-            return parts[1]
-        return ''
+        return addr.split()[1] if isinstance(addr, str) and len(addr.split()) > 1 else ''
 
     library_data = []
     for _, row in df.iterrows():
@@ -93,10 +81,12 @@ def load_library_data():  # 캐싱 목적
             'region': extract_region(row['주소']),
             'district': extract_district(row['주소'])
         })
-
     return library_data
 
 
+# -----------------------------
+# 도서관 분류 정보 반환
+# -----------------------------
 @app.route('/libraries')
 def libraries():
     libs = load_library_data()
@@ -111,11 +101,9 @@ def libraries():
     libraries_by_district = {}
     for lib in libs:
         key = f"{lib['region']}|{lib['district']}"
-        if key not in libraries_by_district:
-            libraries_by_district[key] = []
-        libraries_by_district[key].append({
+        libraries_by_district.setdefault(key, []).append({
             'libraryName': lib['libraryName'],
-            'libraryCode': lib['libraryCode'],
+            'libraryCode': lib['libraryCode']
         })
 
     return jsonify({
@@ -125,33 +113,31 @@ def libraries():
     })
 
 
-# --- Rate Limiting 기능 추가 ---
-
+# -----------------------------
+# Rate Limiting (1분당 10회)
+# -----------------------------
 MAX_CALLS_PER_MINUTE = 10
-call_records = {}  # {client_ip: [timestamp1, timestamp2, ...]}
+call_records = {}
 
 def rate_limit(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         client_ip = request.remote_addr or 'unknown'
         now = time()
-        window_start = now - 60  # 60초
-
-        calls = call_records.get(client_ip, [])
-        # 60초 이전 호출 기록 제거
-        calls = [t for t in calls if t > window_start]
-
+        window_start = now - 60
+        calls = [t for t in call_records.get(client_ip, []) if t > window_start]
         if len(calls) >= MAX_CALLS_PER_MINUTE:
             return jsonify({"error": "API 호출 한도를 초과했습니다. 잠시 후 다시 시도해주세요."}), 429
-
         calls.append(now)
         call_records[client_ip] = calls
-
         return func(*args, **kwargs)
     return wrapper
 
 
-@app.route('/search')  # 알라딘 검색
+# -----------------------------
+# 알라딘 도서 검색
+# -----------------------------
+@app.route('/search')
 @rate_limit
 def search():
     query = request.args.get('query', '').strip()
@@ -159,9 +145,9 @@ def search():
         return jsonify({'error': '검색어를 입력하세요.'}), 400
 
     cache_key = f"search:{query}"
-    cached_result = cache.get(cache_key)
-    if cached_result:
-        return jsonify(cached_result)
+    cached = cache.get(cache_key)
+    if cached:
+        return jsonify(cached)
 
     url = 'https://www.aladin.co.kr/ttb/api/ItemSearch.aspx'
     params = {
@@ -177,95 +163,136 @@ def search():
 
     try:
         resp = requests.get(url, params=params, timeout=5)
-        print("호출 URL:", resp.url)
-        print("응답 내용:", resp.text[:500])
         resp.raise_for_status()
         data = resp.json()
         items = data.get('item', [])
+        result_items = [{
+            'title': b.get('title'),
+            'author': b.get('author'),
+            'publisher': b.get('publisher'),
+            'pubDate': b.get('pubDate'),
+            'cover': b.get('cover'),
+            'priceStandard': b.get('priceStandard'),
+            'priceSales': b.get('priceSales'),
+            'link': b.get('link'),
+            'isbn13': b.get('isbn13') or b.get('isbn'),
+        } for b in items]
 
-        result_items = []
-        for book in items:
-            result_items.append({
-                'title': book.get('title'),
-                'author': book.get('author'),
-                'publisher': book.get('publisher'),
-                'pubDate': book.get('pubDate'),
-                'cover': book.get('cover'),
-                'priceStandard': book.get('priceStandard'),
-                'priceSales': book.get('priceSales'),
-                'link': book.get('link'),
-                'isbn13': book.get('isbn13') or book.get('isbn'),
-            })
-
-        cache.set(cache_key, {'item': result_items}, timeout=300)  # 5분 캐싱
-
+        cache.set(cache_key, {'item': result_items}, timeout=300)
         return jsonify({'item': result_items})
-
     except Exception as e:
-        return jsonify({'error': f'알라딘 API 호출 실패: {str(e)}'}), 500
+        return jsonify({'error': f'알라딘 API 호출 실패: {e}'}), 500
 
 
-@app.route('/check_library')  # 선택 도서관의 소장과 대출 여부 확인
+# -----------------------------
+# 도서관별 소장/대출 확인
+# -----------------------------
+@app.route('/check_library')
 @rate_limit
 def check_library():
     isbn = request.args.get('isbn', '').strip()
     library_code = request.args.get('libraryCode', '').strip()
-
     if not isbn or not library_code:
         return jsonify({'error': 'ISBN과 libraryCode를 모두 전달해야 합니다.'}), 400
 
     cache_key = f"check_library:{isbn}:{library_code}"
-    cached_result = cache.get(cache_key)
-    if cached_result:
-        return jsonify(cached_result)
+    cached = cache.get(cache_key)
+    if cached:
+        return jsonify(cached)
 
-    all_libraries = load_library_data()
-    target_library = next((lib for lib in all_libraries if lib['libraryCode'] == library_code), None)
-
-    if not target_library:
-        return jsonify({'error': '해당 libraryCode에 해당하는 도서관이 없습니다.'}), 404
+    libs = load_library_data()
+    target = next((lib for lib in libs if lib['libraryCode'] == library_code), None)
+    if not target:
+        return jsonify({'error': '해당 도서관 코드가 없습니다.'}), 404
 
     url = 'http://data4library.kr/api/bookExist'
     params = {
         'authKey': LIBRARY_API_KEY,
-        'libCode': target_library['libraryCode'],
+        'libCode': target['libraryCode'],
         'isbn13': isbn,
         'format': 'json'
     }
 
     try:
         resp = requests.get(url, params=params, timeout=5)
-        resp.raise_for_status()
         data = resp.json()
-
-        print("API 응답 데이터:", data)
-
         result = data.get('response', {}).get('result', {})
         has_book = result.get('hasBook', 'N') == 'Y'
         loan_available = result.get('loanAvailable', 'N') == 'Y'
 
         response_data = {
             'results': [{
-                'libraryName': target_library['libraryName'],
+                'libraryName': target['libraryName'],
                 'hasBook': has_book,
                 'loanAvailable': loan_available
             }]
         }
-
-        cache.set(cache_key, response_data, timeout=300)  # 5분 캐싱
-
+        cache.set(cache_key, response_data, timeout=300)
         return jsonify(response_data)
-
     except Exception as e:
-        return jsonify({
-            'results': [{
-                'libraryName': target_library['libraryName'],
-                'error': "도서 정보 조회 실패"
-            }]
-        })
+        return jsonify({'error': str(e)}), 500
 
-if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 10000))  
-#  app.run(host='0.0.0.0', port=port)
-#  app.run(debug=True, port=5000)
-    pass
+
+# -----------------------------
+# ✅ 새 기능: 지역별 보유/대출현황 조회
+# -----------------------------
+@app.route('/check_region')
+@rate_limit
+def check_region():
+    isbn = request.args.get('isbn', '').strip()
+    region = request.args.get('region', '').strip()
+    district = request.args.get('district', '').strip()
+
+    if not isbn or not region or not district:
+        return jsonify({'error': 'isbn, region, district가 필요합니다.'}), 400
+
+    cache_key = f"check_region:{isbn}:{region}:{district}"
+    cached = cache.get(cache_key)
+    if cached:
+        return jsonify(cached)
+
+    libs = load_library_data()
+    target_libs = [lib for lib in libs if lib['region'] == region and lib['district'] == district]
+
+    if not target_libs:
+        return jsonify({'results': []})
+
+    results = []
+    for lib in target_libs:
+        try:
+            url = 'http://data4library.kr/api/bookExist'
+            params = {
+                'authKey': LIBRARY_API_KEY,
+                'libCode': lib['libraryCode'],
+                'isbn13': isbn,
+                'format': 'json'
+            }
+            resp = requests.get(url, params=params, timeout=4)
+            data = resp.json()
+            result = data.get('response', {}).get('result', {})
+            has_book = result.get('hasBook', 'N') == 'Y'
+            loan_available = result.get('loanAvailable', 'N') == 'Y'
+            results.append({
+                'libraryName': lib['libraryName'],
+                'hasBook': has_book,
+                'loanAvailable': loan_available
+            })
+        except Exception:
+            results.append({
+                'libraryName': lib['libraryName'],
+                'hasBook': False,
+                'loanAvailable': False
+            })
+
+    final_data = {'results': results}
+    cache.set(cache_key, final_data, timeout=600)
+    return jsonify(final_data)
+
+
+# -----------------------------
+# 실행
+# -----------------------------
+# if __name__ == '__main__':
+#    port = int(os.environ.get("PORT", 10000))
+#    app.run(host='0.0.0.0', port=port, debug=True)
+    
